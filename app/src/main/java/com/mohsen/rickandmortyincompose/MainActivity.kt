@@ -11,6 +11,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import com.mohsen.rickandmortyincompose.ui.theme.RickAndMortyInComposeTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -30,6 +33,21 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+}
+
+@Composable
+fun RickAndMortyNavHost(navController: NavHostController, modifier: Modifier = Modifier) {
+    NavHost(
+        navController = navController,
+        startDestination = CharactersDestination.route,
+        modifier = modifier
+    ) {
+        composable(route = CharactersDestination.route) {
+            CharactersScreen(characters = )
+        }
+
+    }
+
 }
 
 @Composable
