@@ -33,7 +33,7 @@ fun CharacterList(characters: List<Character>, modifier: Modifier = Modifier) {
     LazyVerticalGrid(
         modifier = modifier, columns = GridCells.Adaptive(100.dp)
     ) {
-        items(characters, key = { character -> character.id }) { character ->
+        items(characters, key = { character -> character.id!! }) { character ->
             CharacterItemView(character = character)
         }
     }
@@ -65,7 +65,7 @@ fun CharacterItemView(
                     .padding(bottom = 8.dp)
             )
             Text(
-                text = character.name, style = MaterialTheme.typography.body2
+                text = character.name!!, style = MaterialTheme.typography.body2
             )
         }
     }
