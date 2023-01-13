@@ -11,13 +11,14 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import javax.inject.Inject
 import javax.inject.Singleton
 
 private const val baseUrl = "https://rickandmortyapi.com/api/"
 
 @Module
 @InstallIn(SingletonComponent::class)
-class NetworkModule {
+class NetworkModule @Inject constructor(private val noInternetInterceptor: NoInternetInterceptor) {
     @Provides
     @Singleton
     fun provideNetworkApi(networkJson: Json): Api {
@@ -26,7 +27,9 @@ class NetworkModule {
                 OkHttpClient.Builder()
                     .addInterceptor(HttpLoggingInterceptor().apply {
                         setLevel(HttpLoggingInterceptor.Level.BODY)
-                    }).build()
+                    })
+                    .addInterceptor(noInternetInterceptor)
+                    .build()
             )
             .addConverterFactory(networkJson.asConverterFactory("application/json".toMediaType()))
             .build()

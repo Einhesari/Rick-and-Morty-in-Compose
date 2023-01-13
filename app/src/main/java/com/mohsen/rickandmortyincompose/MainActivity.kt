@@ -43,7 +43,7 @@ fun RickAndMortyNavHost(navController: NavHostController, modifier: Modifier = M
         modifier = modifier
     ) {
         composable(route = CharactersDestination.route) {
-            CharactersScreen(characters = )
+            CharactersScreen()
         }
 
     }
@@ -53,7 +53,6 @@ fun RickAndMortyNavHost(navController: NavHostController, modifier: Modifier = M
 @Composable
 fun Greeting(name: String, viewModel: CharacterViewModel = hiltViewModel()) {
     Text(text = "Hello $name!")
-    viewModel.test()
 }
 
 @Preview(showBackground = true)

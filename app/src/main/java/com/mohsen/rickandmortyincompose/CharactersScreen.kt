@@ -19,12 +19,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 
 
 @Composable
-fun CharactersScreen(characters: List<Character>) {
+fun CharactersScreen(viewModel: CharacterViewModel = hiltViewModel()) {
     CharacterList(characters = characters)
 }
 
