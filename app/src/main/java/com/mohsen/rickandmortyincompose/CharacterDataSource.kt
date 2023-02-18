@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 class CharacterDataSource @Inject constructor(private val api: Api) {
 
-    suspend fun getCharacters(): Flow<Character> = flow {
+    suspend fun getCharacters(): Flow<CharacterApiResult> = flow {
         emit(apiCall {
             api.getCharacters(1)
         })

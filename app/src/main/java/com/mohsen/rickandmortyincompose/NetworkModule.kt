@@ -11,17 +11,17 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import javax.inject.Inject
 import javax.inject.Singleton
 
 private const val baseUrl = "https://rickandmortyapi.com/api/"
 
 @Module
 @InstallIn(SingletonComponent::class)
-class NetworkModule @Inject constructor(private val noInternetInterceptor: NoInternetInterceptor) {
+class NetworkModule {
+
     @Provides
     @Singleton
-    fun provideNetworkApi(networkJson: Json): Api {
+    fun provideNetworkApi(networkJson: Json, noInternetInterceptor: NoInternetInterceptor): Api {
         return Retrofit.Builder().baseUrl(baseUrl)
             .client(
                 OkHttpClient.Builder()

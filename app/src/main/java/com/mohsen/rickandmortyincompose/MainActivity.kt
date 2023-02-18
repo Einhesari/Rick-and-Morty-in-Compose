@@ -14,6 +14,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.mohsen.rickandmortyincompose.ui.theme.RickAndMortyInComposeTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -23,12 +24,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             RickAndMortyInComposeTheme {
+                val navController = rememberNavController()
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    Greeting("Android")
+                    RickAndMortyNavHost(navController = navController)
                 }
             }
         }
@@ -51,7 +53,7 @@ fun RickAndMortyNavHost(navController: NavHostController, modifier: Modifier = M
 }
 
 @Composable
-fun Greeting(name: String, viewModel: CharacterViewModel = hiltViewModel()) {
+fun Greeting(name: String) {
     Text(text = "Hello $name!")
 }
 
