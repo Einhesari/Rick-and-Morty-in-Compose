@@ -1,5 +1,7 @@
 package com.mohsen.rickandmortyincompose
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -20,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -40,7 +43,7 @@ fun CharactersScreen(viewModel: CharacterViewModel = hiltViewModel()) {
 @Composable
 fun CharacterList(characters: List<Character>, modifier: Modifier = Modifier) {
     LazyVerticalGrid(
-        modifier = modifier, columns = GridCells.Fixed(2)
+        modifier = modifier.padding(16.dp), columns = GridCells.Fixed(2)
     ) {
         items(characters, key = { character -> character.id }) { character ->
             CharacterItemView(character = character)
@@ -48,12 +51,15 @@ fun CharacterList(characters: List<Character>, modifier: Modifier = Modifier) {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CharacterItemView(
     character: Character, modifier: Modifier = Modifier
 ) {
     Card(
-        elevation = 4.dp, shape = RoundedCornerShape(4.dp)
+        modifier = modifier.padding(bottom = 16.dp, start = 8.dp, end = 8.dp),
+        elevation = 4.dp,
+        shape = RoundedCornerShape(4.dp)
     ) {
         Column(
             verticalArrangement = Arrangement.Center,
@@ -68,9 +74,15 @@ fun CharacterItemView(
                     .padding(16.dp)
                     .clip(CircleShape),
             )
-/*            Text(
-                text = character.name, style = MaterialTheme.typography.body2, maxLines = 1
-            )*/
+            Text(
+                modifier = Modifier
+                    .padding(bottom = 8.dp)
+                    .basicMarquee(),
+                text = character.name,
+                style = MaterialTheme.typography.body2,
+                maxLines = 1,
+                textAlign = TextAlign.Center
+            )
         }
     }
 }
