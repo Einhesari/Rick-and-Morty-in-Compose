@@ -15,7 +15,8 @@ class CharacterViewModel @Inject constructor(private val dataSource: CharacterDa
     private val _state = MutableStateFlow(
         CharactersScreenViewState(
             loading = true,
-            characters = mutableListOf()
+            characters = mutableListOf(),
+            errorText = ""
         )
     )
     val state: StateFlow<CharactersScreenViewState>
@@ -29,10 +30,22 @@ class CharacterViewModel @Inject constructor(private val dataSource: CharacterDa
         getAllCharacters()
     }
 
-    private fun getAllCharacters() {
+    fun getAllCharacters() {
         viewModelScope.launch {
+            _state.emit(
+                _state.value.copy(
+                    loading = true,
+                    errorText = ""
+                )
+            )
             dataSource.getCharacters()
                 .catch {
+                    _state.emit(
+                        _state.value.copy(
+                            loading = false,
+                            errorText = "Couldn't find rick or morty :("
+                        )
+                    )
                     _event.emit(CharacterScreenViewEvents.ShowError(it.message))
                 }
                 .collect {
@@ -42,7 +55,8 @@ class CharacterViewModel @Inject constructor(private val dataSource: CharacterDa
                             progressBar = false,
                             characters = it.results?.map { characterEntity ->
                                 characterEntity.mapToPresentationModel()
-                            } ?: listOf()
+                            } ?: listOf(),
+                            errorText = ""
                         )
                     )
                 }
@@ -53,7 +67,8 @@ class CharacterViewModel @Inject constructor(private val dataSource: CharacterDa
 data class CharactersScreenViewState(
     val loading: Boolean,
     val progressBar: Boolean = false,
-    val characters: List<Character>
+    val characters: List<Character>,
+    val errorText: String
 )
 
 sealed class CharacterScreenViewEvents {

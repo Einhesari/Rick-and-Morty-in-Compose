@@ -4,7 +4,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -26,11 +28,16 @@ class MainActivity : ComponentActivity() {
             RickAndMortyInComposeTheme {
                 val navController = rememberNavController()
                 // A surface container using the 'background' color from the theme
-                Surface(
+                Scaffold(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ) {
-                    RickAndMortyNavHost(navController = navController)
+                    topBar = {
+                        TopBar()
+                    }
+                ) { innerPadding ->
+                    RickAndMortyNavHost(
+                        navController = navController,
+                        modifier = Modifier.padding(innerPadding)
+                    )
                 }
             }
         }
@@ -45,7 +52,9 @@ fun RickAndMortyNavHost(navController: NavHostController, modifier: Modifier = M
         modifier = modifier
     ) {
         composable(route = CharactersDestination.route) {
-            CharactersScreen()
+            CharactersScreen { characterId ->
+                navController.navigate("${CharacterDetailDestination.route}/$characterId")
+            }
         }
 
     }
