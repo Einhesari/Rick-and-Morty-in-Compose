@@ -14,9 +14,10 @@ object CharactersDestination : Destination {
 
 object CharacterDetailDestination : Destination {
     override val route: String = "characterDetail"
-    const val characterArg = "charater"
-    val routWithArgs = "${CharactersDestination.route}/$characterArg"
+    const val characterArg = "characterId"
+    val routWithArgs = "${route}/{${characterArg}}"
     val arguments = listOf(navArgument(characterArg) {
-        type = NavType.StringType
+        type =
+            NavType.IntType
     })
 }
