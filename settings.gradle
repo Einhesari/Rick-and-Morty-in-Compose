@@ -14,10 +14,11 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Rick and Morty in Compose"
 include ':app'
-include ':feature:character'
 include ':core:common'
 include ':core:model'
 include ':core:network'
 include ':core:data'
 include ':feature:details'
 include ':core:designsystem'
+include ':feature:character'
+include ':core:navigation'

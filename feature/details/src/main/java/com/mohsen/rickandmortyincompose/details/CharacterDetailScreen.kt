@@ -54,7 +54,7 @@ fun CharacterDetailScreen(characterId: Int, viewModel: CharacterDetailViewModel 
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun CharacterDetailCard(character: com.mohsen.rickandmortyincompose.model.Character) {
+fun CharacterDetailCard(character: Character) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.TopCenter,

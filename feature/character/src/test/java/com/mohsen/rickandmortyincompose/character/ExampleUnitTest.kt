@@ -1,6 +1,6 @@
-package com.mohsen.rickandmortyincompose
+package com.mohsen.rickandmortyincompose.character
 
-import org.junit.Assert.assertEquals
+import org.junit.Assert.*
 import org.junit.Test
 
 /**

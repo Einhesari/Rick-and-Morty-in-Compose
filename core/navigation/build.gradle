@@ -1,12 +1,10 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
-    id 'kotlin-kapt'
-    id 'com.google.dagger.hilt.android'
 }
 
 android {
-    namespace 'com.mohsen.rickandmortyincompose.character'
+    namespace 'com.mohsen.rickandmortincompose.navigation'
     compileSdk 33
 
     defaultConfig {
@@ -39,10 +37,8 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:common"))
-    implementation(project(":core:model"))
-    implementation(project(":core:data"))
+    implementation(project(":feature:character"))
+    implementation(project(":feature:details"))
     implementation(project(":core:designsystem"))
-    implementation "com.google.dagger:hilt-android:2.44"
-    kapt "com.google.dagger:hilt-android-compiler:2.44"
+    implementation "androidx.navigation:navigation-compose:2.5.3"
 }

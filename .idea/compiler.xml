@@ -6,6 +6,7 @@
       <module name="Rick_and_Morty_in_Compose.core.common" target="11" />
       <module name="Rick_and_Morty_in_Compose.core.data" target="11" />
       <module name="Rick_and_Morty_in_Compose.core.designsystem" target="11" />
+      <module name="Rick_and_Morty_in_Compose.core.navigation" target="11" />
       <module name="Rick_and_Morty_in_Compose.core.network" target="11" />
       <module name="Rick_and_Morty_in_Compose.feature.character" target="11" />
       <module name="Rick_and_Morty_in_Compose.feature.details" target="11" />

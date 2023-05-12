@@ -1,4 +1,4 @@
-package com.mohsen.rickandmortyincompose
+package com.mohsen.rickandmortyincompose.character
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.Arrangement
@@ -25,6 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.mohsen.rickandmortyincompose.common.R
@@ -33,6 +34,7 @@ import com.mohsen.rickandmortyincompose.designsystem.Error
 import com.mohsen.rickandmortyincompose.designsystem.Loading
 import com.mohsen.rickandmortyincompose.model.Character
 import kotlinx.coroutines.launch
+
 @Composable
 fun CharactersScreen(
     viewModel: CharactersViewModel = hiltViewModel(),

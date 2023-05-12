@@ -12,7 +12,7 @@ class CharacterDataSource @Inject constructor(private val api: Api) {
 
     suspend fun getCharactersByPage(page : Int): Flow<CharacterApiResult> = flow {
         emit(apiCall {
-            api.getAllCharacters(1)
+            api.getAllCharacters(page)
         })
     }
 

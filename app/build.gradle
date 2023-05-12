@@ -3,7 +3,6 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'com.google.dagger.hilt.android'
-    id 'kotlinx-serialization'
     id 'kotlin-parcelize'
 }
 
@@ -53,19 +52,9 @@ android {
 }
 
 dependencies {
-    implementation platform('androidx.compose:compose-bom:2023.01.00')
-
     implementation(project(":core:designsystem"))
-    implementation(project(":feature:character"))
-    implementation(project(":feature:details"))
-    implementation 'androidx.core:core-ktx:1.7.0'
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.4'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
-    implementation("com.google.dagger:hilt-android:2.44")
-    kapt("com.google.dagger:hilt-android-compiler:2.44")
-    implementation 'androidx.activity:activity-compose'
-    implementation 'androidx.hilt:hilt-navigation-compose'
-    implementation "androidx.hilt:hilt-navigation-compose:1.0.0"
-    implementation "androidx.navigation:navigation-compose:2.5.3"
+    implementation(project(":core:navigation"))
+    implementation(project(":core:common"))
+    implementation "com.google.dagger:hilt-android:2.44"
+    kapt "com.google.dagger:hilt-android-compiler:2.44"
 }

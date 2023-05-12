@@ -1,4 +1,4 @@
-package com.mohsen.rickandmortyincompose
+package com.mohsen.rickandmortyincompose.character
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,7 +9,6 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
 @HiltViewModel
 class CharactersViewModel @Inject constructor(private val repository: CharacterRepository) :
     ViewModel() {

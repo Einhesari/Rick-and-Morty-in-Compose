@@ -1,14 +1,16 @@
 package com.mohsen.rickandmortyincompose.data.di
 
+import com.mohsen.rickandmortyincompose.data.repository.CharacterRepository
 import com.mohsen.rickandmortyincompose.data.repository.CharacterRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
+import dagger.hilt.android.components.ViewModelComponent
 
 @Module
-@InstallIn(SingletonComponent::class)
-interface DataModule {
+@InstallIn(ViewModelComponent::class)
+abstract class DataModule {
+
     @Binds
-    fun provideCharacterRepository(): CharacterRepositoryImpl
+    abstract fun bindCharacterRepository(repositoryImpl: CharacterRepositoryImpl): CharacterRepository
 }
