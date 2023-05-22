@@ -9,15 +9,17 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
 @HiltViewModel
 class CharactersViewModel @Inject constructor(private val repository: CharacterRepository) :
     ViewModel() {
 
     private val _state = MutableStateFlow(
         CharactersScreenState(
-            loading = true,
+            loadingDialog = true,
             characters = mutableListOf(),
-            errorText = ""
+            errorText = "",
+            progressBar = false
         )
     )
     val state = _state.asStateFlow()
@@ -25,25 +27,41 @@ class CharactersViewModel @Inject constructor(private val repository: CharacterR
     private val _event = Channel<CharactersScreenEvents>()
     val event = _event.receiveAsFlow()
 
+    private var nextPage = 1
+    private var canPaginate = true
+
     init {
-        getAllCharacters()
+        getInitialCharacters()
     }
 
-    fun getAllCharacters() {
+    fun getInitialCharacters() {
+        fetchCharacters(1)
+    }
+
+    fun paginate() {
+        if (!_state.value.loadingDialog)
+            fetchCharacters(nextPage)
+    }
+
+    private fun fetchCharacters(page: Int) {
         viewModelScope.launch {
             _state.update {
                 it.copy(
-                    loading = true,
+                    loadingDialog = page == 1,
+                    progressBar = page > 1,
                     errorText = ""
                 )
             }
-            repository.getCharactersByPage(1)
+            repository.getCharactersByPage(page)
                 .catch {
-                    _state.update {
-                        _state.value.copy(
-                            loading = false,
-                            errorText = "Couldn't find rick or morty :("
-                        )
+                    if (page == 1) {
+                        _state.update {
+                            _state.value.copy(
+                                loadingDialog = false,
+                                progressBar = false,
+                                errorText = "Couldn't find rick or morty :("
+                            )
+                        }
                     }
                     _event.send(
                         CharactersScreenEvents.ShowError(
@@ -53,21 +71,29 @@ class CharactersViewModel @Inject constructor(private val repository: CharacterR
                 }
                 .collect { result ->
                     _state.update {
+                        val characters = mutableListOf<Character>().apply {
+                            if (page > 1) {
+                                addAll(it.characters + result.characters)
+                            } else {
+                                addAll(result.characters)
+                            }
+                        }
                         it.copy(
-                            loading = false,
+                            loadingDialog = false,
                             progressBar = false,
-                            characters = result,
+                            characters = characters,
                             errorText = ""
                         )
                     }
+                    nextPage++
                 }
         }
     }
 }
 
 data class CharactersScreenState(
-    val loading: Boolean,
-    val progressBar: Boolean = false,
+    val loadingDialog: Boolean,
+    val progressBar: Boolean,
     val characters: List<Character>,
     val errorText: String
 )

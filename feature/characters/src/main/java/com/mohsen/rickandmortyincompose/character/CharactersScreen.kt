@@ -1,22 +1,12 @@
 package com.mohsen.rickandmortyincompose.character
 
 import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.grid.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ScaffoldState
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,6 +32,9 @@ fun CharactersScreen(
     onItemClick: (Int) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
+    val listState = rememberLazyGridState()
+    val viewState by viewModel.state.collectAsStateWithLifecycle()
+
     viewModel.event.observeWithLifecycle {
         when (it) {
             is CharactersScreenEvents.ShowError -> {
@@ -51,27 +44,53 @@ fun CharactersScreen(
             }
         }
     }
-    val state by viewModel.state.collectAsStateWithLifecycle()
-    with(state) {
+
+    with(viewState) {
         when {
-            loading -> Loading()
+            loadingDialog -> Loading()
             errorText.isNotEmpty() -> Error(modifier = Modifier, error = errorText) {
-                viewModel.getAllCharacters()
+                viewModel.getInitialCharacters()
             }
-            characters.isNotEmpty() -> CharacterList(characters = characters, onItemClick)
+            characters.isNotEmpty() -> {
+                Column {
+                    if (progressBar) LinearProgressIndicator(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 8.dp , vertical = 4.dp)
+                    )
+                    CharacterList(
+                        characters = characters, onItemClick, listState
+                    )
+                }
+            }
             else -> Error(modifier = Modifier, error = "an unknown error happened") {
-                viewModel.getAllCharacters()
+                viewModel.getInitialCharacters()
             }
         }
+    }
+
+    val shouldPaginate by remember {
+        derivedStateOf {
+            (listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
+                ?: -10) >= listState.layoutInfo.totalItemsCount - 4
+        }
+    }
+
+    LaunchedEffect(key1 = shouldPaginate) {
+        if (shouldPaginate) viewModel.paginate()
     }
 }
 
 @Composable
 fun CharacterList(
-    characters: List<Character>, onItemClick: (Int) -> Unit, modifier: Modifier = Modifier
+    characters: List<Character>,
+    onItemClick: (Int) -> Unit,
+    listState: LazyGridState,
+    modifier: Modifier = Modifier
 ) {
     LazyVerticalGrid(
         modifier = modifier,
+        state = listState,
         contentPadding = PaddingValues(16.dp),
         columns = GridCells.Fixed(2),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -106,8 +125,7 @@ fun CharacterItemView(
                 modifier = Modifier
                     .padding(16.dp)
                     .border(
-                        border = BorderStroke(2.dp, MaterialTheme.colors.onBackground),
-                        CircleShape
+                        border = BorderStroke(2.dp, MaterialTheme.colors.onBackground), CircleShape
                     )
                     .clip(CircleShape),
             )
