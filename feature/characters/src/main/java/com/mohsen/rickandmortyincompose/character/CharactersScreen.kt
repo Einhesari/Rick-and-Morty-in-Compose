@@ -14,6 +14,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -81,7 +82,7 @@ fun CharactersScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .align(Alignment.BottomCenter)
-                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                        .padding(horizontal = 18.dp, vertical = 4.dp)
                 )
                 if (errorText.isNotEmpty()) Error(modifier = Modifier, error = errorText) {
                     viewModel.getInitialCharacters()
@@ -150,4 +151,10 @@ fun CharacterItemView(
             )
         }
     }
+}
+
+@Preview
+@Composable
+fun CharacterScreenPreview() {
+
 }

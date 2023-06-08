@@ -20,22 +20,27 @@ class CharacterRepositoryImpl @Inject constructor(
 ) : CharacterRepository {
     override suspend fun getCharactersByPage(page: Int): Flow<List<SitcomCharacter>> {
         return flow {
-            if (page == 1) emit(getCharactersFromDb(page).map { it.mapToExternalModel() })
+            val oldCachedCharacters =
+                getCharactersFromDb(page).map { it.mapToExternalModel() }.also {
+                    emit(it)
+                }
             characterOnlineDataSource.getCharactersByPage(page).onSuccess { apiResult ->
-                apiResult.results?.let { resultList ->
-                    resultList.forEach { updateDb(it.mapToDbModel()) }
+                apiResult.results?.let { networkResult ->
+                    networkResult.forEach { updateDb(it.mapToDbModel()) }
                 }
 
             }.onFailure {
                 throw it
             }
-            emit(getCharactersFromDb(page).map { it.mapToExternalModel() })
+            getCharactersFromDb(page).map { it.mapToExternalModel() }.also {
+                if (oldCachedCharacters != it) emit(it)
+            }
         }
     }
 
     override suspend fun getCharacter(id: Int): Result<SitcomCharacter> =
         withContext(Dispatchers.IO) {
-            Result.success(charactersDao.getCharacter(id).mapToExternalModel())
+            kotlin.runCatching { charactersDao.getCharacter(id).mapToExternalModel() }
         }
 
     private suspend fun updateDb(characterEntity: CharacterEntity) {

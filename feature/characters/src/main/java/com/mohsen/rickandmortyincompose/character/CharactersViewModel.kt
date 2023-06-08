@@ -46,58 +46,50 @@ class CharactersViewModel @Inject constructor(private val getCharactersUseCase: 
     }
 
     fun paginate() {
-        if (!_state.value.loadingDialog)
-            fetchCharacters(nextPage)
+        if (!_state.value.loadingDialog) fetchCharacters(nextPage)
     }
 
     private fun fetchCharacters(page: Int) {
         viewModelScope.launch {
             _state.update {
                 it.copy(
-                    loadingDialog = page == 1,
-                    progressBar = page > 1,
-                    errorText = ""
+                    loadingDialog = page == 1, progressBar = page > 1, errorText = ""
                 )
             }
-            getCharactersUseCase.getCharactersByPage(page)
-                .onEach { result ->
-                    _state.update {
-                        val sitcomCharacters = mutableListOf<SitcomCharacter>().apply {
-                            if (page > 1) {
-                                addAll(it.sitcomCharacters + result.sitcomCharacters)
-                            } else {
-                                addAll(result.sitcomCharacters)
-                            }
-                        }
-                        it.copy(
-                            progressBar = false,
-                            sitcomCharacters = sitcomCharacters,
-                            errorText = ""
-                        )
-                    }
-                    canPaginate = result.hasNextPage
-                    nextPage++
-                }
-                .onCompletion {
-                    _state.update { it.copy(loadingDialog = false) }
-                }
-                .catch {
-                    if (page == 1) {
-                        _state.update {
-                            _state.value.copy(
-                                loadingDialog = false,
-                                progressBar = false,
-                                errorText = "Couldn't find rick or morty :("
-                            )
+            getCharactersUseCase.getCharactersByPage(page).onEach { result ->
+                _state.update {
+                    val sitcomCharacters = mutableListOf<SitcomCharacter>().apply {
+                        if (page > 1) {
+                            addAll(it.sitcomCharacters + result.sitcomCharacters)
+                        } else {
+                            addAll(result.sitcomCharacters)
                         }
                     }
-                    _event.send(
-                        CharactersScreenEvents.ShowError(
-                            it.message!!
-                        )
+                    it.copy(
+                        loadingDialog = false,
+                        sitcomCharacters = sitcomCharacters,
                     )
                 }
-                .launchIn(viewModelScope)
+                canPaginate = result.hasNextPage
+                nextPage++
+            }.onCompletion {
+                _state.update { it.copy(loadingDialog = false, progressBar = false) }
+            }.catch {
+                if (_state.value.sitcomCharacters.isEmpty()) {
+                    _state.update {
+                        _state.value.copy(
+                            loadingDialog = false,
+                            progressBar = false,
+                            errorText = "Couldn't find rick or morty :("
+                        )
+                    }
+                }
+                _event.send(
+                    CharactersScreenEvents.ShowError(
+                        it.message!!
+                    )
+                )
+            }.launchIn(viewModelScope)
         }
     }
 }
@@ -110,6 +102,5 @@ data class CharactersScreenState(
 )
 
 sealed class CharactersScreenEvents {
-    data class ShowError(val msg: String) :
-        CharactersScreenEvents()
+    data class ShowError(val msg: String) : CharactersScreenEvents()
 }
