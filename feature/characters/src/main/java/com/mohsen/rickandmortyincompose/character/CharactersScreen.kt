@@ -9,6 +9,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -22,18 +23,28 @@ import com.mohsen.rickandmortyincompose.common.R
 import com.mohsen.rickandmortyincompose.common.network.observeWithLifecycle
 import com.mohsen.rickandmortyincompose.designsystem.Error
 import com.mohsen.rickandmortyincompose.designsystem.Loading
-import com.mohsen.rickandmortyincompose.model.Character
+import com.mohsen.rickandmortyincompose.model.SitcomCharacter
 import kotlinx.coroutines.launch
 
 @Composable
 fun CharactersScreen(
     viewModel: CharactersViewModel = hiltViewModel(),
-    scaffoldState: ScaffoldState,
     onItemClick: (Int) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyGridState()
     val viewState by viewModel.state.collectAsStateWithLifecycle()
+    val scaffoldState = rememberScaffoldState()
+    val shouldPaginate by remember {
+        derivedStateOf {
+            (listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
+                ?: -10) >= listState.layoutInfo.totalItemsCount - 4
+        }
+    }
+
+    LaunchedEffect(key1 = shouldPaginate) {
+        if (shouldPaginate) viewModel.paginate()
+    }
 
     viewModel.event.observeWithLifecycle {
         when (it) {
@@ -45,45 +56,44 @@ fun CharactersScreen(
         }
     }
 
-    with(viewState) {
-        when {
-            loadingDialog -> Loading()
-            errorText.isNotEmpty() -> Error(modifier = Modifier, error = errorText) {
-                viewModel.getInitialCharacters()
-            }
-            characters.isNotEmpty() -> {
-                Column {
-                    if (progressBar) LinearProgressIndicator(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 8.dp , vertical = 4.dp)
-                    )
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        topBar = { TopAppBar(title = { Text(text = "All Characters") }) },
+        scaffoldState = scaffoldState
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            with(viewState) {
+                if (sitcomCharacters.isNotEmpty()) {
+                    val backgroundBlur = if (loadingDialog) 4.dp else 0.dp
                     CharacterList(
-                        characters = characters, onItemClick, listState
+                        sitcomCharacters = sitcomCharacters,
+                        onItemClick,
+                        listState,
+                        Modifier.blur(backgroundBlur)
                     )
                 }
-            }
-            else -> Error(modifier = Modifier, error = "an unknown error happened") {
-                viewModel.getInitialCharacters()
+                if (loadingDialog) Loading()
+                if (progressBar) LinearProgressIndicator(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.BottomCenter)
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                )
+                if (errorText.isNotEmpty()) Error(modifier = Modifier, error = errorText) {
+                    viewModel.getInitialCharacters()
+                }
             }
         }
-    }
-
-    val shouldPaginate by remember {
-        derivedStateOf {
-            (listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
-                ?: -10) >= listState.layoutInfo.totalItemsCount - 4
-        }
-    }
-
-    LaunchedEffect(key1 = shouldPaginate) {
-        if (shouldPaginate) viewModel.paginate()
     }
 }
 
 @Composable
 fun CharacterList(
-    characters: List<Character>,
+    sitcomCharacters: List<SitcomCharacter>,
     onItemClick: (Int) -> Unit,
     listState: LazyGridState,
     modifier: Modifier = Modifier
@@ -96,8 +106,8 @@ fun CharacterList(
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        items(characters, key = { character -> character.id }) { character ->
-            CharacterItemView(character = character, onItemClick)
+        items(sitcomCharacters, key = { character -> character.id }) { character ->
+            CharacterItemView(sitcomCharacter = character, onItemClick)
         }
     }
 }
@@ -105,10 +115,10 @@ fun CharacterList(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CharacterItemView(
-    character: Character, onClick: (Int) -> Unit, modifier: Modifier = Modifier
+    sitcomCharacter: SitcomCharacter, onClick: (Int) -> Unit, modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = modifier.clickable { onClick(character.id) },
+        modifier = modifier.clickable { onClick(sitcomCharacter.id) },
         elevation = 4.dp,
         shape = RoundedCornerShape(4.dp),
     ) {
@@ -117,7 +127,7 @@ fun CharacterItemView(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current).data(character.imageUrl)
+                model = ImageRequest.Builder(LocalContext.current).data(sitcomCharacter.imageUrl)
                     .fallback(R.drawable.placeholder).error(R.drawable.placeholder)
                     .placeholder(R.drawable.placeholder).crossfade(true).build(),
                 contentDescription = "",
@@ -133,7 +143,7 @@ fun CharacterItemView(
                 modifier = Modifier
                     .padding(8.dp)
                     .basicMarquee(),
-                text = character.name,
+                text = sitcomCharacter.name,
                 style = MaterialTheme.typography.body2,
                 maxLines = 1,
                 textAlign = TextAlign.Center,

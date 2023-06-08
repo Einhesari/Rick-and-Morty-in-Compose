@@ -1,6 +1,6 @@
 package com.mohsen.rickandmortyincompose.model
 
-data class Character(
+data class SitcomCharacter(
     val id: Int,
     val name: String,
     val imageUrl: String,

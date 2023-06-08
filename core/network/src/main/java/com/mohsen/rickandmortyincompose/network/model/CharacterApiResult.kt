@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class CharacterApiResult(
     @SerialName("info") val info: ApiInfo?,
-    @SerialName("results") val results: ArrayList<CharacterEntity>?
+    @SerialName("results") val results: ArrayList<NetworkCharacter>?
 )
 
 @Serializable

@@ -2,14 +2,16 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="1.7">
-      <module name="Rick_and_Morty_in_Compose.app" target="11" />
-      <module name="Rick_and_Morty_in_Compose.core.common" target="11" />
-      <module name="Rick_and_Morty_in_Compose.core.data" target="11" />
-      <module name="Rick_and_Morty_in_Compose.core.designsystem" target="11" />
-      <module name="Rick_and_Morty_in_Compose.core.navigation" target="11" />
-      <module name="Rick_and_Morty_in_Compose.core.network" target="11" />
-      <module name="Rick_and_Morty_in_Compose.feature.characters" target="11" />
-      <module name="Rick_and_Morty_in_Compose.feature.details" target="11" />
+      <module name="Rick_and_Morty_in_Compose.app" target="17" />
+      <module name="Rick_and_Morty_in_Compose.core.common" target="17" />
+      <module name="Rick_and_Morty_in_Compose.core.data" target="17" />
+      <module name="Rick_and_Morty_in_Compose.core.database" target="17" />
+      <module name="Rick_and_Morty_in_Compose.core.designsystem" target="17" />
+      <module name="Rick_and_Morty_in_Compose.core.domain" target="17" />
+      <module name="Rick_and_Morty_in_Compose.core.navigation" target="17" />
+      <module name="Rick_and_Morty_in_Compose.core.network" target="17" />
+      <module name="Rick_and_Morty_in_Compose.feature.characters" target="17" />
+      <module name="Rick_and_Morty_in_Compose.feature.details" target="17" />
     </bytecodeTargetLevel>
   </component>
 </project>

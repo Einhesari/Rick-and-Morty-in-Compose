@@ -7,14 +7,14 @@ import java.io.IOException
 import java.net.UnknownHostException
 
 object NetworkErrorHandler {
-    suspend fun <T> apiCall(api: suspend () -> Response<T>): T = withContext(Dispatchers.IO) {
+    suspend fun <T> safeApiCall(api: suspend () -> Response<T>): Result<T> = withContext(Dispatchers.IO) {
         try {
-            return@withContext processResponse(api.invoke())
+            return@withContext Result.success(processResponse(api.invoke()))
         } catch (e: Exception) {
-            when (e) {
-                is UnknownHostException, is NoInternetException -> throw NoInternetException()
-                is IOException -> throw ServerOutOfReachException()
-                else -> throw UnknownException()
+            return@withContext when (e) {
+                is UnknownHostException, is NoInternetException -> Result.failure(Exception("No internet connection"))
+                is IOException -> Result.failure(Exception("Can not connect to the server"))
+                else -> Result.failure(Exception("An unknown exception occurred"))
             }
         }
     }
@@ -33,5 +33,4 @@ object NetworkErrorHandler {
 
 
 class NoInternetException(msg: String = "No internet connection") : IOException(msg)
-class ServerOutOfReachException(msg: String = "Can not connect to the server") : IOException(msg)
 class UnknownException(msg: String = "An unknown exception occurred") : IOException(msg)

@@ -2,22 +2,29 @@ package com.mohsen.rickandmortyincompose.character
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mohsen.rickandmortyincompose.data.repository.CharacterRepository
-import com.mohsen.rickandmortyincompose.model.Character
+import com.mohsen.rickandmortincompose.domain.usecase.CharactersUseCase
+import com.mohsen.rickandmortyincompose.model.SitcomCharacter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CharactersViewModel @Inject constructor(private val repository: CharacterRepository) :
+class CharactersViewModel @Inject constructor(private val getCharactersUseCase: CharactersUseCase) :
     ViewModel() {
 
     private val _state = MutableStateFlow(
         CharactersScreenState(
             loadingDialog = true,
-            characters = mutableListOf(),
+            sitcomCharacters = mutableListOf(),
             errorText = "",
             progressBar = false
         )
@@ -52,7 +59,28 @@ class CharactersViewModel @Inject constructor(private val repository: CharacterR
                     errorText = ""
                 )
             }
-            repository.getCharactersByPage(page)
+            getCharactersUseCase.getCharactersByPage(page)
+                .onEach { result ->
+                    _state.update {
+                        val sitcomCharacters = mutableListOf<SitcomCharacter>().apply {
+                            if (page > 1) {
+                                addAll(it.sitcomCharacters + result.sitcomCharacters)
+                            } else {
+                                addAll(result.sitcomCharacters)
+                            }
+                        }
+                        it.copy(
+                            progressBar = false,
+                            sitcomCharacters = sitcomCharacters,
+                            errorText = ""
+                        )
+                    }
+                    canPaginate = result.hasNextPage
+                    nextPage++
+                }
+                .onCompletion {
+                    _state.update { it.copy(loadingDialog = false) }
+                }
                 .catch {
                     if (page == 1) {
                         _state.update {
@@ -69,24 +97,7 @@ class CharactersViewModel @Inject constructor(private val repository: CharacterR
                         )
                     )
                 }
-                .collect { result ->
-                    _state.update {
-                        val characters = mutableListOf<Character>().apply {
-                            if (page > 1) {
-                                addAll(it.characters + result.characters)
-                            } else {
-                                addAll(result.characters)
-                            }
-                        }
-                        it.copy(
-                            loadingDialog = false,
-                            progressBar = false,
-                            characters = characters,
-                            errorText = ""
-                        )
-                    }
-                    nextPage++
-                }
+                .launchIn(viewModelScope)
         }
     }
 }
@@ -94,7 +105,7 @@ class CharactersViewModel @Inject constructor(private val repository: CharacterR
 data class CharactersScreenState(
     val loadingDialog: Boolean,
     val progressBar: Boolean,
-    val characters: List<Character>,
+    val sitcomCharacters: List<SitcomCharacter>,
     val errorText: String
 )
 

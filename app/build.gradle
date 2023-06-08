@@ -49,6 +49,7 @@ android {
     kapt {
         correctErrorTypes = true
     }
+    namespace 'com.mohsen.rickandmortyincompose'
 }
 
 dependencies {

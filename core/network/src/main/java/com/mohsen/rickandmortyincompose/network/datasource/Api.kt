@@ -1,7 +1,7 @@
 package com.mohsen.rickandmortyincompose.network.datasource
 
 import com.mohsen.rickandmortyincompose.network.model.CharacterApiResult
-import com.mohsen.rickandmortyincompose.network.model.CharacterEntity
+import com.mohsen.rickandmortyincompose.network.model.NetworkCharacter
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -12,5 +12,5 @@ interface Api {
     suspend fun getAllCharacters(@Query("page") page: Int): Response<CharacterApiResult>
 
     @GET("character/{id}")
-    suspend fun getCharacter(@Path("id") characterId: Int): Response<CharacterEntity>
+    suspend fun getCharacter(@Path("id") characterId: Int): Response<NetworkCharacter>
 }

@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class CharacterEntity(
+data class NetworkCharacter(
     @SerialName("id") val id: Int?,
     @SerialName("name") val name: String?,
     @SerialName("status") val status: String?,

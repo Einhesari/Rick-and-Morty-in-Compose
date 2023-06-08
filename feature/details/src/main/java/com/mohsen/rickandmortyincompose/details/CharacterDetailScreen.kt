@@ -27,7 +27,7 @@ import coil.request.ImageRequest
 import com.mohsen.rickandmortyincompose.common.R
 import com.mohsen.rickandmortyincompose.designsystem.Error
 import com.mohsen.rickandmortyincompose.designsystem.Loading
-import com.mohsen.rickandmortyincompose.model.Character
+import com.mohsen.rickandmortyincompose.model.SitcomCharacter
 
 @Composable
 fun CharacterDetailScreen(characterId: Int, viewModel: CharacterDetailViewModel = hiltViewModel()) {
@@ -44,7 +44,7 @@ fun CharacterDetailScreen(characterId: Int, viewModel: CharacterDetailViewModel 
             errorText.isNotEmpty() -> Error(modifier = Modifier, error = errorText) {
                 viewModel.getCharacter(characterId)
             }
-            character != null -> CharacterDetailCard(character)
+            sitcomCharacter != null -> CharacterDetailCard(sitcomCharacter)
             else -> Error(modifier = Modifier, error = "an Unknown error happened") {
                 viewModel.getCharacter(characterId)
             }
@@ -54,7 +54,7 @@ fun CharacterDetailScreen(characterId: Int, viewModel: CharacterDetailViewModel 
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun CharacterDetailCard(character: Character) {
+fun CharacterDetailCard(sitcomCharacter: SitcomCharacter) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.TopCenter,
@@ -82,7 +82,7 @@ fun CharacterDetailCard(character: Character) {
                 ) {
                     Text(
                         modifier = Modifier.basicMarquee(),
-                        text = character.name,
+                        text = sitcomCharacter.name,
                         style = MaterialTheme.typography.body2,
                         maxLines = 1
                     )
@@ -90,7 +90,7 @@ fun CharacterDetailCard(character: Character) {
                         modifier = Modifier
                             .padding(top = 16.dp)
                             .basicMarquee(),
-                        text = character.origin,
+                        text = sitcomCharacter.origin,
                         style = MaterialTheme.typography.body2,
                         maxLines = 1
                     )
@@ -98,7 +98,7 @@ fun CharacterDetailCard(character: Character) {
                         modifier = Modifier
                             .padding(top = 16.dp)
                             .basicMarquee(),
-                        text = character.location,
+                        text = sitcomCharacter.location,
                         style = MaterialTheme.typography.body2,
                         maxLines = 1
                     )
@@ -106,7 +106,7 @@ fun CharacterDetailCard(character: Character) {
                         modifier = Modifier
                             .padding(top = 16.dp)
                             .basicMarquee(),
-                        text = character.status,
+                        text = sitcomCharacter.status,
                         style = MaterialTheme.typography.body2,
                         maxLines = 1
                     )
@@ -114,7 +114,7 @@ fun CharacterDetailCard(character: Character) {
             }
         }
         AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current).data(character.imageUrl)
+            model = ImageRequest.Builder(LocalContext.current).data(sitcomCharacter.imageUrl)
                 .fallback(R.drawable.placeholder).error(R.drawable.placeholder)
                 .placeholder(R.drawable.placeholder).crossfade(true).build(),
             contentDescription = "",
@@ -131,7 +131,7 @@ fun CharacterDetailCard(character: Character) {
 @Composable
 fun CharacterDetailCardPreview() {
     CharacterDetailCard(
-        character = Character(
+        sitcomCharacter = SitcomCharacter(
             id = 1,
             "Rick",
             "https://i.stack.imgur.com/6Ym15.jpg?s=256&g=1",

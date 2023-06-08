@@ -4,12 +4,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Scaffold
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
-import com.mohsen.rickandmortyincompose.designsystem.TopBar
 import com.mohsen.rickandmortyincompose.ui.theme.RickAndMortyInComposeTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -19,18 +16,12 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             RickAndMortyInComposeTheme {
-                val scaffoldState = rememberScaffoldState()
                 val navController = rememberNavController()
                 // A surface container using the 'background' color from the theme
-                Scaffold(modifier = Modifier.fillMaxSize(),
-                    scaffoldState = scaffoldState,
-                    topBar = {
-                        TopBar()
-                    }) { innerPadding ->
+                Surface(modifier = Modifier.fillMaxSize()) {
                     RickAndMortyNavHost(
                         navController = navController,
-                        scaffoldState,
-                        modifier = Modifier.padding(innerPadding)
+                        modifier = Modifier.fillMaxSize()
                     )
                 }
             }

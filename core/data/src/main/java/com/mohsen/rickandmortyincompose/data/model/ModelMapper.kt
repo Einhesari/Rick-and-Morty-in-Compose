@@ -1,13 +1,14 @@
 package com.mohsen.rickandmortyincompose.data.model
 
-import com.mohsen.rickandmortyincompose.model.Character
-import com.mohsen.rickandmortyincompose.network.model.CharacterEntity
+import com.mohsen.rickandmortyincompose.database.model.CharacterEntity
+import com.mohsen.rickandmortyincompose.network.model.NetworkCharacter
 
-fun CharacterEntity.mapToPresentationModel() = Character(
-    id = id ?: 0,
+fun NetworkCharacter.mapToDbModel() = CharacterEntity(
+    id = id ?: -1,
     name = name ?: "",
-    imageUrl = image ?: "",
-    origin = origin?.name ?: "",
-    location = location?.name ?: "",
-    status = status ?: ""
+    status = status ?: "",
+    species = species ?: "",
+    type = type ?: "",
+    gender = gender ?: "",
+    imageUrl = image ?: ""
 )
