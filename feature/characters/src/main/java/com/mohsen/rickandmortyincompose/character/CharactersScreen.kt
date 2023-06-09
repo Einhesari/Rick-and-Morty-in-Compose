@@ -28,7 +28,7 @@ import com.mohsen.rickandmortyincompose.model.SitcomCharacter
 import kotlinx.coroutines.launch
 
 @Composable
-fun CharactersScreen(
+fun CharactersRoute(
     viewModel: CharactersViewModel = hiltViewModel(),
     onItemClick: (Int) -> Unit
 ) {
@@ -56,7 +56,19 @@ fun CharactersScreen(
             }
         }
     }
+    CharacterScreen(viewState, scaffoldState, listState, onItemClick) {
+        viewModel.getInitialCharacters()
+    }
+}
 
+@Composable
+fun CharacterScreen(
+    viewState: CharactersScreenState,
+    scaffoldState: ScaffoldState,
+    listState: LazyGridState,
+    onItemClick: (Int) -> Unit,
+    onRetryClicked: () -> Unit
+) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = { TopAppBar(title = { Text(text = "All Characters") }) },
@@ -84,8 +96,11 @@ fun CharactersScreen(
                         .align(Alignment.BottomCenter)
                         .padding(horizontal = 18.dp, vertical = 4.dp)
                 )
-                if (errorText.isNotEmpty()) Error(modifier = Modifier, error = errorText) {
-                    viewModel.getInitialCharacters()
+                if (errorText.isNotEmpty()) Error(
+                    modifier = Modifier,
+                    error = errorText
+                ) {
+                    onRetryClicked()
                 }
             }
         }
