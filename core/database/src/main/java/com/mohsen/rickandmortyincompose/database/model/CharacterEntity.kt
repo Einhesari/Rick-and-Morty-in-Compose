@@ -1,25 +1,23 @@
 package com.mohsen.rickandmortyincompose.database.model
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room.Embedded
+import androidx.room.Relation
 import com.mohsen.rickandmortyincompose.model.SitcomCharacter
 
-@Entity
 data class CharacterEntity(
-    @PrimaryKey val id: Int,
-    val name: String,
-    val status: String,
-    val species: String,
-    val type: String,
-    val gender: String,
-    val imageUrl: String,
+    @Embedded
+    val character: SimpleCharacterEntity,
+    @Relation(parentColumn = "id", entityColumn = "id")
+    val origin: OriginEntity,
+    @Relation(parentColumn = "id", entityColumn = "id")
+    val location: LocationEntity
 )
 
 fun CharacterEntity.mapToExternalModel() = SitcomCharacter(
-    id = id,
-    name = name,
-    imageUrl = imageUrl,
-    origin = "",
-    location = "",
-    status = status
+    id = character.id,
+    name = character.name,
+    imageUrl = character.imageUrl,
+    origin = origin.mapToExternalModel(),
+    location = location.mapToExternalModel(),
+    status = character.status
 )

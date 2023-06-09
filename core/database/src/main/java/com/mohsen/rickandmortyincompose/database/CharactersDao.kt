@@ -4,15 +4,24 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
 import com.mohsen.rickandmortyincompose.database.model.CharacterEntity
+import com.mohsen.rickandmortyincompose.database.model.LocationEntity
+import com.mohsen.rickandmortyincompose.database.model.OriginEntity
+import com.mohsen.rickandmortyincompose.database.model.SimpleCharacterEntity
 
 @Dao
 interface CharactersDao {
-    @Query("SELECT * FROM characterentity ORDER BY id LIMIT :limit OFFSET :offset")
+    @Query("SELECT * FROM character ORDER BY id LIMIT :limit OFFSET :offset")
     fun getCharacters(limit: Int, offset: Int): List<CharacterEntity>
 
-    @Query("SELECT * FROM characterentity WHERE id = :id")
+    @Query("SELECT * FROM character WHERE id = :id")
     fun getCharacter(id: Int): CharacterEntity
 
-    @Upsert(entity = CharacterEntity::class)
-    fun upsertCharacter(characters: CharacterEntity)
+    @Upsert(entity = SimpleCharacterEntity::class)
+    fun upsertCharacter(characters: SimpleCharacterEntity)
+
+    @Upsert(entity = LocationEntity::class)
+    fun upsertLocation(location: LocationEntity)
+
+    @Upsert(entity = OriginEntity::class)
+    fun upsertOrigin(origin: OriginEntity)
 }

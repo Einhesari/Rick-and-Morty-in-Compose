@@ -22,7 +22,8 @@ class CharacterRepositoryImpl @Inject constructor(
         return flow {
             val oldCachedCharacters =
                 getCharactersFromDb(page).map { it.mapToExternalModel() }.also {
-                    emit(it)
+                    if (it.isNotEmpty())
+                        emit(it)
                 }
             characterOnlineDataSource.getCharactersByPage(page).onSuccess { apiResult ->
                 apiResult.results?.let { networkResult ->
@@ -45,7 +46,11 @@ class CharacterRepositoryImpl @Inject constructor(
 
     private suspend fun updateDb(characterEntity: CharacterEntity) {
         withContext(Dispatchers.IO) {
-            charactersDao.upsertCharacter(characterEntity)
+            charactersDao.apply {
+                upsertCharacter(characterEntity.character)
+                upsertLocation(characterEntity.location)
+                upsertOrigin(characterEntity.origin)
+            }
         }
     }
 

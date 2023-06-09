@@ -11,8 +11,8 @@ data class NetworkCharacter(
     @SerialName("species") val species: String?,
     @SerialName("type") val type: String?,
     @SerialName("gender") val gender: String?,
-    @SerialName("origin") val origin: CharacterOrigin?,
-    @SerialName("location") val location: CharacterLocation?,
+    @SerialName("origin") val origin: NetworkCharacterOrigin?,
+    @SerialName("location") val location: NetworkCharacterLocation?,
     @SerialName("image") val image: String?,
     @SerialName("episode") val episodes: ArrayList<String>?,
     @SerialName("url") val url: String?,
@@ -20,11 +20,11 @@ data class NetworkCharacter(
 )
 
 @Serializable
-data class CharacterOrigin(
+data class NetworkCharacterOrigin(
     @SerialName("name") val name: String?, @SerialName("url") val url: String?
 )
 
 @Serializable
-data class CharacterLocation(
+data class NetworkCharacterLocation(
     @SerialName("name") val name: String?, @SerialName("url") val url: String?
 )

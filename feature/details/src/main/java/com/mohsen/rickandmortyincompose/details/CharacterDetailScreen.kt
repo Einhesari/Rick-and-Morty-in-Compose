@@ -18,7 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -90,7 +89,7 @@ fun CharacterDetailCard(sitcomCharacter: SitcomCharacter) {
                         modifier = Modifier
                             .padding(top = 16.dp)
                             .basicMarquee(),
-                        text = sitcomCharacter.origin,
+                        text = sitcomCharacter.origin.name,
                         style = MaterialTheme.typography.body2,
                         maxLines = 1
                     )
@@ -98,7 +97,7 @@ fun CharacterDetailCard(sitcomCharacter: SitcomCharacter) {
                         modifier = Modifier
                             .padding(top = 16.dp)
                             .basicMarquee(),
-                        text = sitcomCharacter.location,
+                        text = sitcomCharacter.location.name,
                         style = MaterialTheme.typography.body2,
                         maxLines = 1
                     )
@@ -127,17 +126,17 @@ fun CharacterDetailCard(sitcomCharacter: SitcomCharacter) {
     }
 }
 
-@Preview
-@Composable
-fun CharacterDetailCardPreview() {
-    CharacterDetailCard(
-        sitcomCharacter = SitcomCharacter(
-            id = 1,
-            "Rick",
-            "https://i.stack.imgur.com/6Ym15.jpg?s=256&g=1",
-            "Iran",
-            "Tehran",
-            "Alive"
-        )
-    )
-}
+//@Preview
+//@Composable
+//fun CharacterDetailCardPreview() {
+//    CharacterDetailCard(
+//        sitcomCharacter = SitcomCharacter(
+//            id = 1,
+//            "Rick",
+//            "https://i.stack.imgur.com/6Ym15.jpg?s=256&g=1",
+//            "Iran",
+//            "Tehran",
+//            "Alive"
+//        )
+//    )
+//}
