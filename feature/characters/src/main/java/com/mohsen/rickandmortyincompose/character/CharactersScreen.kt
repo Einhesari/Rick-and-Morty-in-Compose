@@ -1,5 +1,8 @@
 package com.mohsen.rickandmortyincompose.character
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.*
@@ -13,6 +16,7 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -20,11 +24,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.mohsen.rickandmortyincompose.common.R
 import com.mohsen.rickandmortyincompose.common.network.observeWithLifecycle
 import com.mohsen.rickandmortyincompose.designsystem.Error
 import com.mohsen.rickandmortyincompose.designsystem.Loading
 import com.mohsen.rickandmortyincompose.model.SitcomCharacter
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
@@ -56,7 +60,7 @@ fun CharactersRoute(
             }
         }
     }
-    CharacterScreen(viewState, scaffoldState, listState, onItemClick) {
+    CharacterScreen(viewState, scaffoldState, listState, coroutineScope, onItemClick) {
         viewModel.getInitialCharacters()
     }
 }
@@ -66,13 +70,45 @@ fun CharacterScreen(
     viewState: CharactersScreenState,
     scaffoldState: ScaffoldState,
     listState: LazyGridState,
+    coroutineScope: CoroutineScope,
     onItemClick: (Int) -> Unit,
     onRetryClicked: () -> Unit
 ) {
+    val showUpButton by remember {
+        derivedStateOf {
+            listState.firstVisibleItemIndex > 4
+        }
+    }
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = { TopAppBar(title = { Text(text = "All Characters") }) },
-        scaffoldState = scaffoldState
+        scaffoldState = scaffoldState,
+        floatingActionButton = {
+            AnimatedVisibility(
+                visible = showUpButton,
+                enter = slideInVertically(
+                    initialOffsetY = { fullHeight -> fullHeight }
+                ),
+                exit = slideOutVertically(
+                    targetOffsetY = { fullHeight -> fullHeight * 2 }
+                )
+            ) {
+                FloatingActionButton(backgroundColor = MaterialTheme.colors.primary,
+                    modifier = Modifier
+                        .navigationBarsPadding(),
+                    onClick = {
+                        coroutineScope.launch {
+                            listState.animateScrollToItem(0)
+                        }
+                    }) {
+                    Image(
+                        painterResource(id = R.drawable.baseline_keyboard_arrow_up_24),
+                        "Navigate to top"
+                    )
+                }
+            }
+        },
+        floatingActionButtonPosition = FabPosition.Center
     ) { paddingValues ->
         Box(
             modifier = Modifier

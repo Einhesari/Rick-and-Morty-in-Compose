@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
-import com.mohsen.rickandmortyincompose.ui.theme.RickAndMortyInComposeTheme
+import com.mohsen.rickandmortyincompose.designsystem.theme.RickAndMortyInComposeTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

@@ -23,7 +23,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.mohsen.rickandmortyincompose.common.R
 import com.mohsen.rickandmortyincompose.designsystem.Error
 import com.mohsen.rickandmortyincompose.designsystem.Loading
 import com.mohsen.rickandmortyincompose.model.SitcomCharacter

@@ -1,4 +1,4 @@
-package com.mohsen.rickandmortyincompose.ui.theme
+package com.mohsen.rickandmortyincompose.designsystem.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle
