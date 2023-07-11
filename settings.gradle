@@ -1,0 +1,26 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+rootProject.name = "Rick and Morty in Compose"
+include ':app'
+include ':core:common'
+include ':core:model'
+include ':core:network'
+include ':core:data'
+include ':feature:details'
+include ':core:designsystem'
+include ':feature:characters'
+include ':core:navigation'
+include ':core:database'
+include ':core:domain'
