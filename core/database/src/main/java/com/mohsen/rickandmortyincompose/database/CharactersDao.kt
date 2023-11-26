@@ -17,7 +17,7 @@ interface CharactersDao {
     fun getCharacter(id: Int): CharacterEntity
 
     @Upsert(entity = SimpleCharacterEntity::class)
-    fun upsertCharacter(characters: SimpleCharacterEntity)
+    fun upsertCharacter(character: SimpleCharacterEntity)
 
     @Upsert(entity = LocationEntity::class)
     fun upsertLocation(location: LocationEntity)
