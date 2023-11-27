@@ -2,18 +2,26 @@ package com.mohsen.rickandmortyincompose.database.datasource
 
 import com.mohsen.rickandmortyincompose.database.CharactersDao
 import com.mohsen.rickandmortyincompose.database.model.CharacterEntity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class CharactersLocalDataSource @Inject constructor(private val dao: CharactersDao) {
 
-    fun getAllCharacters(count: Int, from: Int) = dao.getCharacters(from, count)
+    suspend fun getAllCharacters(count: Int, from: Int) = withContext(Dispatchers.IO) {
+        dao.getCharacters(count , from)
+    }
 
-    fun getCharacter(id: Int) = dao.getCharacter(id)
+    suspend fun getCharacter(id: Int) = withContext(Dispatchers.IO) {
+        dao.getCharacter(id)
+    }
 
-    fun updateCharacter(character: CharacterEntity) {
-        dao.upsertCharacter(character.character)
-        dao.upsertLocation(character.location)
-        dao.upsertOrigin(character.origin)
+    suspend fun updateCharacter(character: CharacterEntity) {
+        withContext(Dispatchers.IO) {
+            dao.upsertCharacter(character.character)
+            dao.upsertLocation(character.location)
+            dao.upsertOrigin(character.origin)
+        }
     }
 
 }
