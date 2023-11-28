@@ -14,7 +14,7 @@ interface CharactersDao {
     fun getCharacters(limit: Int, offset: Int): List<CharacterEntity>
 
     @Query("SELECT * FROM character WHERE id = :id")
-    fun getCharacter(id: Int): CharacterEntity
+    fun getCharacter(id: Int): CharacterEntity?
 
     @Upsert(entity = SimpleCharacterEntity::class)
     fun upsertCharacter(character: SimpleCharacterEntity)

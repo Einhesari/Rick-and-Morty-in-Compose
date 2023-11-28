@@ -5,5 +5,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface CharacterRepository {
     suspend fun getCharactersByPage(page: Int): Flow<List<SitcomCharacter>>
-    suspend fun getCharacter(id: Int): Result<SitcomCharacter>
+    suspend fun getCharacter(id: Int): Result<SitcomCharacter?>
 }

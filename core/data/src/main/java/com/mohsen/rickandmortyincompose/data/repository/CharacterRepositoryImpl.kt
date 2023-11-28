@@ -37,8 +37,8 @@ class CharacterRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getCharacter(id: Int): Result<SitcomCharacter> =
-        runCatching { charactersLocalDataSource.getCharacter(id).mapToExternalModel() }
+    override suspend fun getCharacter(id: Int): Result<SitcomCharacter?> =
+        runCatching { charactersLocalDataSource.getCharacter(id)?.mapToExternalModel() }
 
     private suspend fun updateDb(characterEntity: CharacterEntity) {
         charactersLocalDataSource.updateCharacter(characterEntity)
